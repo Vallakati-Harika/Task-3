@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Addition Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: hwb(185 11% 76% / 0.396);
+            background-image: url(web3.jpg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #quiz-container {
+            background: #fff;
+            padding: 80px;
+            border-radius: 50px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 500px;
+        }
+        button {
+            display: block;
+            margin: 30px auto;
+            padding: 30px;
+            width: 80%;
+            border: none;
+            background: #007bff;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div id="quiz-container">
+        <h2 id="question">Question</h2>
+        <div id="options"></div>
+        <button id="next-button" onclick="nextQuestion()" style="display: none;">Next</button>
+        <p id="score"></p>
+    </div>
+    <script>
+        const quizData = [
+            { question: "5 + 3 = ?", options: ["7", "8", "9", "10"], answer: "8" },
+            { question: "6 + 4 = ?", options: ["9", "10", "11", "12"], answer: "10" },
+            { question: "2 + 7 = ?", options: ["8", "9", "10", "11"], answer: "9" }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            document.getElementById("score").innerText = "";
+            const question = quizData[currentQuestion];
+            document.getElementById("question").innerText = question.question;
+            const optionsDiv = document.getElementById("options");
+            optionsDiv.innerHTML = "";
+
+            question.options.forEach(option => {
+                const button = document.createElement("button");
+                button.innerText = option;
+                button.onclick = () => checkAnswer(option, button);
+                optionsDiv.appendChild(button);
+            });
+            document.getElementById("next-button").style.display = "none";
+        }
+
+        function checkAnswer(selectedOption, button) {
+            const correctAnswer = quizData[currentQuestion].answer;
+            button.style.backgroundColor = selectedOption === correctAnswer ? "blue" : "red";
+            button.style.color = "purple";
+            if (selectedOption === correctAnswer) {
+                score++;
+                document.getElementById("score").innerText = "Correct!";
+            } else {
+                document.getElementById("score").innerText = `Wrong! Correct: ${correctAnswer}`;
+            }
+            document.querySelectorAll("#options button").forEach(btn => btn.disabled = true);
+            document.getElementById("next-button").style.display = "block";
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < quizData.length) {
+                loadQuestion();
+            } else {
+                document.getElementById("question").innerText = "Quiz Over!";
+                document.getElementById("options").innerHTML = "";
+                document.getElementById("score").innerText = `Your score: ${score}/${quizData.length}`;
+                document.getElementById("next-button").style.display = "none";
+            }
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
